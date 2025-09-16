@@ -1,2 +1,6 @@
 /vendor/
+
 .env
+
+# Arquivo utilizado para organizar ideias simples
+ORGANIZACAO.md
