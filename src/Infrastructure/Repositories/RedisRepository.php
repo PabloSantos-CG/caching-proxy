@@ -7,11 +7,11 @@ use Predis\Client as PredisClient;
 
 class RedisRepository implements CacheRepositoryInterface
 {
-    private PredisClient $redis;
+    private PredisClient $predisClient;
 
     public function __construct(
     ) {
-        $this->redis = new PredisClient();
+        $this->predisClient = new PredisClient();
     }
 
     private function incrementRateLimit(string $key): int
