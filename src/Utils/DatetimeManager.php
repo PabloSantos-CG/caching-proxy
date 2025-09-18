@@ -5,7 +5,7 @@ namespace App\Utils;
 use DateTimeImmutable;
 
 
-final class DatetimeUtil
+final class DatetimeManager
 {
     private function __construct() {}
 
