@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Infrastructure\Contracts\CacheRepositoryInterface;
-use App\Utils\DatetimeUtil;
+use App\Utils\DatetimeManager;
 use Predis\Client as PredisClient;
 use Dotenv\Dotenv;
 
@@ -58,7 +58,7 @@ class RedisRepository implements CacheRepositoryInterface
 
         $result = $this->predisClient->hset($key, [
             "data" => $data,
-            "last_modified" => DatetimeUtil::now(),
+            "last_modified" => DatetimeManager::now(),
             "$key:rate_limit" => 60,
         ]);
 
@@ -68,4 +68,6 @@ class RedisRepository implements CacheRepositoryInterface
 
         return $result;
     }
+
+    // public function setFile()
 }
