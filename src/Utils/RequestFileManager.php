@@ -4,15 +4,18 @@ namespace App\Utils;
 
 use Exception;
 
+
 final class RequestFileManager
 {
     private function __construct() {}
 
-    static public function run()
+    static public function mountFile()
     {
         if (!$_FILES)  throw new Exception('File not found', 404);
 
-        $data = [];
+        if (\count($_FILES) > 1) {
+            throw new Exception('file limit exceeded', 404);
+        }
 
         /** 
          * @var array{
@@ -31,6 +34,7 @@ final class RequestFileManager
 
         if ($size > 2048) throw new Exception('file exceeds 2mb', 413);
 
+        $data = [];
         $data['content'] = \file_get_contents($path);
         $data['content_type'] = \finfo_file(
             \finfo_open(FILEINFO_MIME_TYPE),
