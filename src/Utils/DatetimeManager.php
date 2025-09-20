@@ -9,7 +9,7 @@ final class DatetimeManager
 {
     private function __construct() {}
 
-    static public function now(
+    public static function now(
         \DateTimeZone $timezone = new \DateTimeZone('America/Sao_Paulo')
     ) {
         $dateNow = new \DateTimeImmutable(timezone: $timezone);

@@ -9,7 +9,7 @@ final class RequestFileManager
 {
     private function __construct() {}
 
-    static public function mountFile()
+    public static function mountFile()
     {
         if (!$_FILES)  throw new Exception('file not found', 404);
 
