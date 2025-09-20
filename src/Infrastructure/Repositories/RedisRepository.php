@@ -72,6 +72,4 @@ class RedisRepository implements CacheRepositoryInterface
 
         return $result;
     }
-
-    // public function setFile()
 }
