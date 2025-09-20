@@ -6,7 +6,7 @@ use App\Infrastructure\Contracts\CacheRepositoryInterface;
 use App\Utils\DatetimeManager;
 use Predis\Client as PredisClient;
 use Dotenv\Dotenv;
-
+use Exception;
 
 class RedisRepository implements CacheRepositoryInterface
 {
@@ -24,7 +24,7 @@ class RedisRepository implements CacheRepositoryInterface
             'password' => $_ENV['REDIS_PASSWORD'],
         ]);
     }
-//Adicionar método para salvar arquivos em binário
+    //Adicionar método para salvar arquivos em binário
     private function incrementRateLimit(string $key): int
     {
         return $this->predisClient->hincrby($key, "$key:rate_limit", 1);
@@ -50,21 +50,25 @@ class RedisRepository implements CacheRepositoryInterface
      * @param string $data Json data in string format
      * @param int $ttl Expiration time, default is 2h
      * 
+     * @throws \Exception if operation fail or key exists
+     * 
      * @return boolean
      */
     public function set(string $key, mixed $data, int $ttl = 7200): bool
     {
-        if ($this->predisClient->exists($key)) return false;
+        if ($this->predisClient->exists($key)) {
+            throw new Exception('key exists', 400);
+        }
 
-        $result = $this->predisClient->hset($key, [
+        $result = (bool) $this->predisClient->hset($key, [
             "data" => $data,
             "last_modified" => DatetimeManager::now(),
             "$key:rate_limit" => 60,
         ]);
 
-        if (!$result) return false;
+        if (!$result) throw new Exception('bad request', 500);
 
-        $this->predisClient->hexpire($key, 7200, ['data']);
+        $this->predisClient->expire($key, $ttl);
 
         return $result;
     }
