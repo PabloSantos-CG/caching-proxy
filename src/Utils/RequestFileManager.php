@@ -11,7 +11,7 @@ final class RequestFileManager
 
     static public function mountFile()
     {
-        if (!$_FILES)  throw new Exception('File not found', 404);
+        if (!$_FILES)  throw new Exception('file not found', 404);
 
         if (\count($_FILES) > 1) {
             throw new Exception('file limit exceeded', 404);
