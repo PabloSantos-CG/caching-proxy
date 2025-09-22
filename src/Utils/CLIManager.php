@@ -8,12 +8,19 @@ use InvalidArgumentException;
 class CLIManager
 {
     /**
-     * @throws \ArgumentCountError|InvalidArgumentException
-     * 
+     * @var array{port:int,url:string}|null $data
+     */
+    private static mixed $data = null;
+
+    /**
      * @return array{port:int,url:string} returns validated PORT and URL
+     * 
+     * @throws \ArgumentCountError|InvalidArgumentException
      */
     public static function run(): mixed
     {
+        if (self::$data) return self::$data;
+
         $cliArgs = \array_shift($_SERVER['argv']);
 
         if (
@@ -25,11 +32,26 @@ class CLIManager
             );
         }
 
-        $port = \filter_var($cliArgs[2], \FILTER_VALIDATE_INT);
-        $url = \filter_var($cliArgs[4], \FILTER_VALIDATE_URL);
+        self::$data['port'] = \filter_var($cliArgs[2], \FILTER_VALIDATE_INT);
+        self::$data['url'] = \filter_var($cliArgs[4], \FILTER_VALIDATE_URL);
 
-        if (!$port || !$url) throw new InvalidArgumentException('invalid type');
+        if (!self::$data['port'] || !self::$data['url']) {
+            throw new InvalidArgumentException('invalid type');
+        }
 
-        return ['port' => $port, 'url' => $url];
+        return self::$data;
+    }
+
+    public static function str()
+    {
+        if (!self::$data) self::run();
+
+        $result = '[';
+
+        foreach (self::$data as $key => $value) {
+            $result .= "$key/$value  ";
+        }
+
+        return $result .= ']';
     }
 }
