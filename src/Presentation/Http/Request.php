@@ -3,6 +3,7 @@
 namespace App\Presentation\Http;
 
 use App\Presentation\Contracts\RequestInterface;
+use App\Utils\CLIManager;
 
 class Request implements RequestInterface
 {
@@ -31,5 +32,10 @@ class Request implements RequestInterface
         if ($key) return $_GET[$key];
 
         return $_GET;
+    }
+
+    public function getUrl(): string
+    {
+        return CLIManager::run()['url'] . $_SERVER['REQUEST_URI'];
     }
 }
