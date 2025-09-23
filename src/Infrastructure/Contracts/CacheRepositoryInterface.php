@@ -8,4 +8,5 @@ interface CacheRepositoryInterface
     public function get(string $key): mixed;
     public function set(string $key, mixed $headers, mixed $data): bool;
     public function update(string $key, mixed $data): mixed;
+    public function checkExists(string $key): bool;
 }
