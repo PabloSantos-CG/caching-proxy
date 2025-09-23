@@ -67,7 +67,7 @@ class RedisRepository implements CacheRepositoryInterface
 
         $result = (bool) $this->predisClient->hset($key, [
             "headers" => $headers ?? [],
-            "data" => $data,
+            "body" => $data,
             "last_modified" => DatetimeManager::now(),
             "$key:rate_limit" => 60,
         ]);
@@ -75,6 +75,34 @@ class RedisRepository implements CacheRepositoryInterface
         if (!$result) throw new Exception('bad request', 500);
 
         $this->predisClient->expire($key, $ttl);
+
+        return $result;
+    }
+
+    /**
+     * @param string $key Server URL
+     * @param string $data Json data in string format
+     * 
+     * @throws \Exception if operation fail or key exists
+     * 
+     * @return true
+     */
+    public function update(
+        string $key,
+        mixed $newData,
+    ) {
+        if (!$this->predisClient->exists($key)) {
+            throw new Exception('key does not exist', 400);
+        }
+
+        $result = (bool) $this->predisClient->hset($key, [
+            "body" => $newData,
+            "last_modified" => DatetimeManager::now(),
+        ]);
+
+        if (!$result) throw new Exception('bad request', 500);
+
+        $this->incrementRateLimit($key);
 
         return $result;
     }
