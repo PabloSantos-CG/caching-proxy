@@ -30,6 +30,10 @@ class RedisRepository implements CacheRepositoryInterface
         return $this->predisClient->hincrby($key, "$key:rate_limit", 1);
     }
 
+    public function checkExists(string $key): bool {
+        return $this->predisClient->exists($key);
+    }
+
     /**
      * @param string $key Server URL
      * @return string[]|false
