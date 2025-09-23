@@ -6,22 +6,19 @@ use App\Presentation\Contracts\RequestInterface;
 
 class Request implements RequestInterface
 {
-    private string $url;
-
-    public function __construct()
-    {
-        $this->url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-    }
-
     public function header(?string $key): mixed
     {
-        if ($key) {
-            $header = \get_headers($this->url, true);
+        $headers = \getallheaders();
 
-            return "$key:" . $header[$key];
+        if ($key) {
+            return \array_filter(
+                $headers,
+                fn($k) => $k === $key,
+                \ARRAY_FILTER_USE_KEY
+            );
         }
 
-        return get_headers($this->url);
+        return $headers;
     }
 
     public function method(): string
