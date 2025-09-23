@@ -90,7 +90,7 @@ class RedisRepository implements CacheRepositoryInterface
     public function update(
         string $key,
         mixed $newData,
-    ) {
+    ): bool {
         if (!$this->predisClient->exists($key)) {
             throw new Exception('key does not exist', 400);
         }
