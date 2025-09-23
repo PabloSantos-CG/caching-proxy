@@ -81,22 +81,21 @@ class RedisRepository implements CacheRepositoryInterface
 
     /**
      * @param string $key Server URL
-     * @param string $data Json data in string format
      * 
      * @throws \Exception if operation fail or key exists
      * 
-     * @return true
+     * @return array returns updated data
      */
     public function update(
         string $key,
-        mixed $newData,
-    ): bool {
+        mixed $newBody,
+    ): mixed {
         if (!$this->predisClient->exists($key)) {
             throw new Exception('key does not exist', 400);
         }
 
         $result = (bool) $this->predisClient->hset($key, [
-            "body" => $newData,
+            "body" => $newBody,
             "last_modified" => DatetimeManager::now(),
         ]);
 
@@ -104,6 +103,6 @@ class RedisRepository implements CacheRepositoryInterface
 
         $this->incrementRateLimit($key);
 
-        return $result;
+        return $this->predisClient->hgetall($key);
     }
 }
