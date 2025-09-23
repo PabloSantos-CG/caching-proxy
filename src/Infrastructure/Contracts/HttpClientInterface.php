@@ -4,5 +4,5 @@ namespace App\Infrastructure\Contracts;
 
 interface HttpClientInterface
 {
-    public function get(mixed $headers): mixed;
+    public static function get(string $url, mixed $headers): mixed;
 }
