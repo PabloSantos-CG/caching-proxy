@@ -53,7 +53,7 @@ class RedisRepository implements CacheRepositoryInterface
      * 
      * @throws \Exception if operation fail or key exists
      * 
-     * @return boolean
+     * @return true
      */
     public function set(
         string $key,
