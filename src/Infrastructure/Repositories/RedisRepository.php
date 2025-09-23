@@ -24,7 +24,7 @@ class RedisRepository implements CacheRepositoryInterface
             'password' => $_ENV['REDIS_PASSWORD'],
         ]);
     }
-    //Adicionar método para salvar arquivos em binário
+
     private function incrementRateLimit(string $key): int
     {
         return $this->predisClient->hincrby($key, "$key:rate_limit", 1);
@@ -32,7 +32,7 @@ class RedisRepository implements CacheRepositoryInterface
 
     /**
      * @param string $key Server URL
-     * @return string[]|boolean
+     * @return string[]|false
      */
     public function get(string $key): mixed
     {
