@@ -47,6 +47,7 @@ class RedisRepository implements CacheRepositoryInterface
 
     /**
      * @param string $key Server URL
+     * @param array<string,string>|null $headers headers or null
      * @param string $data Json data in string format
      * @param int $ttl Expiration time, default is 2h
      * 
@@ -54,13 +55,18 @@ class RedisRepository implements CacheRepositoryInterface
      * 
      * @return boolean
      */
-    public function set(string $key, mixed $data, int $ttl = 7200): bool
-    {
+    public function set(
+        string $key,
+        mixed $headers = null,
+        mixed $data,
+        int $ttl = 7200
+    ): bool {
         if ($this->predisClient->exists($key)) {
             throw new Exception('key exists', 400);
         }
 
         $result = (bool) $this->predisClient->hset($key, [
+            "headers" => $headers ?? [],
             "data" => $data,
             "last_modified" => DatetimeManager::now(),
             "$key:rate_limit" => 60,
