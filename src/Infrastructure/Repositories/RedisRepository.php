@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Infrastructure\Contracts\CacheRepositoryInterface;
+use App\Utils\Converter;
 use App\Utils\DatetimeManager;
 use Predis\Client as PredisClient;
 use Dotenv\Dotenv;
@@ -67,6 +68,10 @@ class RedisRepository implements CacheRepositoryInterface
     ): bool {
         if ($this->predisClient->exists($key)) {
             throw new Exception('key exists', 400);
+        }
+
+        if (Converter::getStringSizeInMB($data) > 2) {
+            throw new Exception('exceeded size', 400);
         }
 
         $result = (bool) $this->predisClient->hset($key, [
