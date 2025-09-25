@@ -17,7 +17,7 @@ class CLIManager
      * 
      * @throws \ArgumentCountError|InvalidArgumentException
      */
-    public static function run(): mixed
+    public static function serve(): mixed
     {
         if (self::$data) return self::$data;
 
