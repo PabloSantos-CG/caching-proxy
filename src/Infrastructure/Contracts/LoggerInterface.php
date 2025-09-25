@@ -3,8 +3,9 @@
 namespace App\Infrastructure\Contracts;
 
 use App\Infrastructure\Logging\Level;
+use App\Infrastructure\Logging\LevelEnum;
 
 interface LoggerInterface
 {
-    public function writeTrace(Level $flag): bool;
+    public function writeTrace(?string $message = null, LevelEnum $flag): bool;
 }
