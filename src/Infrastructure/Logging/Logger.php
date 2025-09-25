@@ -19,9 +19,9 @@ class Logger
         $data = [];
 
         $data[] = '[' . DatetimeManager::now() . '] ';
-        $data[] = CLIManager::getConfigurationOptionsAsString() . \PHP_EOL;
+        $data[] = $_ENV['HOST_PORT'] . ':' . $_ENV['ORIGIN'] . \PHP_EOL;
         $data[] = \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
-        $data[] = '[REQUEST_URI::' . $_SERVER['REQUEST_URI'] . '] ';
+        $data[] = '[URI::' . $_GET['url'] . '] ';
         $data[] = "$flag;" . \PHP_EOL;
 
         return \file_put_contents($this->path, $data, \FILE_APPEND);
