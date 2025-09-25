@@ -6,19 +6,15 @@ use App\Infrastructure\Contracts\CacheRepositoryInterface;
 use App\Utils\Converter;
 use App\Utils\DatetimeManager;
 use Predis\Client as PredisClient;
-use Dotenv\Dotenv;
 use Exception;
+
 
 class RedisRepository implements CacheRepositoryInterface
 {
-    private static Dotenv $dotenv;
     private PredisClient $predisClient;
 
     public function __construct()
     {
-        self::$dotenv = Dotenv::createImmutable(__DIR__);
-        self::$dotenv->load();
-
         $this->predisClient = new PredisClient([
             'host' => $_ENV['REDIS_HOST'],
             'port' => $_ENV['REDIS_PORT'],
