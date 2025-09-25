@@ -36,6 +36,7 @@ class Request implements RequestInterface
 
     public function getUrl(): string
     {
-        return CLIManager::run()['url'] . $_SERVER['REQUEST_URI'];
+        $configurationOptions = CLIManager::extractConfigurationOptions();
+        return $configurationOptions['origin_domain'] . $_SERVER['REQUEST_URI'];
     }
 }

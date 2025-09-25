@@ -19,7 +19,7 @@ class Logger
         $data = [];
 
         $data[] = '[' . DatetimeManager::now() . '] ';
-        $data[] = CLIManager::str() . \PHP_EOL;
+        $data[] = CLIManager::getConfigurationOptionsAsString() . \PHP_EOL;
         $data[] = \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
         $data[] = '[REQUEST_URI::' . $_SERVER['REQUEST_URI'] . '] ';
         $data[] = "$flag;" . \PHP_EOL;
