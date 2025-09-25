@@ -3,17 +3,23 @@
 namespace App\Application\Services;
 
 use App\Application\Contracts\ProxyServiceInterface;
+use App\Infrastructure\Contracts\LoggerInterface;
 use App\Infrastructure\HttpClient\HttpClient;
+use App\Infrastructure\Logging\LevelEnum;
+use App\Infrastructure\Logging\Logger;
 use App\Infrastructure\Repositories\RedisRepository;
 use Exception;
+
 
 class ProxyService implements ProxyServiceInterface
 {
     private RedisRepository $cacheRepository;
+    private LoggerInterface $logger;
 
     public function __construct()
     {
         $this->cacheRepository = new RedisRepository();
+        $this->logger = new Logger();
     }
 
     private function createIfNotExists(string $url, mixed $headers): mixed
@@ -28,7 +34,11 @@ class ProxyService implements ProxyServiceInterface
     private function findOrUpdate(string $url, mixed $headers): mixed
     {
         if (!$headers || !$headers['last_modified']) {
-            throw new Exception('key \"last_modified\" not found', 400);
+            $message = 'key \"last_modified\" not found';
+
+            $this->logger->writeTrace($message, LevelEnum::ERROR);
+            
+            throw new Exception($message, 400);
         }
 
         $data = $this->cacheRepository->get($url);
@@ -44,8 +54,12 @@ class ProxyService implements ProxyServiceInterface
     public function index(string $url, mixed $headers): mixed
     {
         if (!$this->cacheRepository->checkExists($url)) {
+            $this->logger->writeTrace(flag: LevelEnum::REQUEST);
+
             return $this->createIfNotExists($url, $headers);
         }
+
+        $this->logger->writeTrace(flag: LevelEnum::REQUEST);
 
         return $this->findOrUpdate($url, $headers);
     }
