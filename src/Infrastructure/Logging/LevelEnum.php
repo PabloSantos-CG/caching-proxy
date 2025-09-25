@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Logging;
 
-enum Level
+enum LevelEnum
 {
     case REQUEST;
     case ERROR;
