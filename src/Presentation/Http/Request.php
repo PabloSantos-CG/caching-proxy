@@ -3,7 +3,7 @@
 namespace App\Presentation\Http;
 
 use App\Presentation\Contracts\RequestInterface;
-use App\Utils\CLIManager;
+
 
 class Request implements RequestInterface
 {
@@ -34,9 +34,11 @@ class Request implements RequestInterface
         return $_GET;
     }
 
+    /**
+     * returns the full URL including "query strings"
+     */
     public function getUrl(): string
     {
-        $configurationOptions = CLIManager::extractConfigurationOptions();
-        return $configurationOptions['origin_domain'] . $_SERVER['REQUEST_URI'];
+        return $_ENV['ORIGIN'] . $_SERVER['REQUEST_URI'];
     }
 }
