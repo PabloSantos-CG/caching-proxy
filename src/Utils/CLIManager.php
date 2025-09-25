@@ -13,11 +13,11 @@ class CLIManager
     private static mixed $data = null;
 
     /**
-     * @return array{port:int,url:string} returns validated PORT and URL
+     * @return array{port:int,origin_domain:string} returns validated PORT and URL
      * 
      * @throws \ArgumentCountError|InvalidArgumentException
      */
-    public static function serve(): mixed
+    public static function extractConfigurationOptions(): mixed
     {
         if (self::$data) return self::$data;
 
@@ -33,23 +33,26 @@ class CLIManager
         }
 
         self::$data['port'] = \filter_var($cliArgs[2], \FILTER_VALIDATE_INT);
-        self::$data['url'] = \filter_var($cliArgs[4], \FILTER_VALIDATE_URL);
+        self::$data['origin_domain'] = \filter_var($cliArgs[4], \FILTER_VALIDATE_URL);
 
-        if (!self::$data['port'] || !self::$data['url']) {
+        if (!self::$data['port'] || !self::$data['origin_domain']) {
             throw new InvalidArgumentException('invalid type');
         }
 
         return self::$data;
     }
 
-    public static function str()
+    /**
+     * Return "[port:value / origin_domain:value]"
+     */
+    public static function getConfigurationOptionsAsString(): string
     {
-        if (!self::$data) self::run();
+        if (!self::$data) self::extractConfigurationOptions();
 
         $result = '[';
 
         foreach (self::$data as $key => $value) {
-            $result .= "$key/$value  ";
+            $result .= "$key:$value /";
         }
 
         return $result .= ']';
