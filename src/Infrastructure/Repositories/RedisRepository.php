@@ -31,7 +31,8 @@ class RedisRepository implements CacheRepositoryInterface
         return $this->predisClient->hincrby($key, "$key:rate_limit", 1);
     }
 
-    public function checkExists(string $key): bool {
+    public function checkExists(string $key): bool
+    {
         return $this->predisClient->exists($key);
     }
 
@@ -113,5 +114,10 @@ class RedisRepository implements CacheRepositoryInterface
         $this->incrementRateLimit($key);
 
         return $this->predisClient->hgetall($key);
+    }
+
+    public function clearAll(): void
+    {
+        $this->predisClient->flushall();
     }
 }
