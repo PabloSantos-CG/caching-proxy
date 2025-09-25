@@ -20,7 +20,7 @@ class Logger
         $data[] = '[' . DatetimeManager::now() . '] ';
         $data[] = $_ENV['HOST_PORT'] . ':' . $_ENV['ORIGIN'] . \PHP_EOL;
         $data[] = \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
-        $data[] = '[URI::' . $_GET['url'] . '] ';
+        $data[] = '[URI::/' . $_GET['url'] . '] ';
         $data[] = "$flag;" . \PHP_EOL;
 
         return \file_put_contents($this->path, $data, \FILE_APPEND);
