@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Logging;
 
-use App\Utils\CLIManager;
 use App\Utils\DatetimeManager;
 
 class Logger
