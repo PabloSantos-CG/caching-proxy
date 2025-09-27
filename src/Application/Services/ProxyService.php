@@ -36,7 +36,7 @@ class ProxyService implements ProxyServiceInterface
         if (!$headers || !$headers['last_modified']) {
             $message = 'key \"last_modified\" not found';
 
-            $this->logger->writeTrace($message, LevelEnum::ERROR);
+            $this->logger->writeTrace(LevelEnum::ERROR, $message);
             
             throw new Exception($message, 400);
         }
@@ -54,12 +54,12 @@ class ProxyService implements ProxyServiceInterface
     public function index(string $url, mixed $headers): mixed
     {
         if (!$this->cacheRepository->checkExists($url)) {
-            $this->logger->writeTrace(flag: LevelEnum::REQUEST);
+            $this->logger->writeTrace(LevelEnum::ERROR);
 
             return $this->createIfNotExists($url, $headers);
         }
 
-        $this->logger->writeTrace(flag: LevelEnum::REQUEST);
+        $this->logger->writeTrace(LevelEnum::REQUEST);
 
         return $this->findOrUpdate($url, $headers);
     }
