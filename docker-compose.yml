@@ -8,6 +8,14 @@ services:
       - ${HOST_PORT}:80
     volumes:
       - .:/var/www/html
+      - ./logs:/var/www/html/logs
+    command: >
+      bash -c "
+        mkdir -p /var/www/html/logs &&
+        chown -R www-data:www-data /var/www/html/logs &&
+        chmod -R 755 /var/www/html/logs &&
+        exec apache2-foreground
+      "
     depends_on:
       - db-cache
     networks:
