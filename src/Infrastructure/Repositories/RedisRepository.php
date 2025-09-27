@@ -3,6 +3,9 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Infrastructure\Contracts\CacheRepositoryInterface;
+use App\Infrastructure\Contracts\LoggerInterface;
+use App\Infrastructure\Logging\LevelEnum;
+use App\Infrastructure\Logging\Logger;
 use App\Utils\Converter;
 use App\Utils\DatetimeManager;
 use Predis\Client as PredisClient;
@@ -12,6 +15,7 @@ use Exception;
 class RedisRepository implements CacheRepositoryInterface
 {
     private PredisClient $predisClient;
+    private LoggerInterface $logger;
 
     public function __construct()
     {
@@ -20,6 +24,8 @@ class RedisRepository implements CacheRepositoryInterface
             'port' => $_ENV['REDIS_PORT'],
             'password' => $_ENV['REDIS_PASSWORD'],
         ]);
+
+        $this->logger = new Logger();
     }
 
     private function incrementRateLimit(string $key): int
@@ -64,10 +70,14 @@ class RedisRepository implements CacheRepositoryInterface
         int $ttl = 7200
     ): bool {
         if ($this->predisClient->exists($key)) {
+            $this->logger->writeTrace(LevelEnum::ERROR, 'Key exists');
+
             throw new Exception('key exists', 400);
         }
 
         if (Converter::getStringSizeInMB($data) > 2) {
+            $this->logger->writeTrace(LevelEnum::ERROR, 'exceeded size');
+
             throw new Exception('exceeded size', 400);
         }
 
@@ -78,7 +88,11 @@ class RedisRepository implements CacheRepositoryInterface
             "$key:rate_limit" => 60,
         ]);
 
-        if (!$result) throw new Exception('bad request', 500);
+        if (!$result) {
+            $this->logger->writeTrace(LevelEnum::ERROR, 'bad request');
+
+            throw new Exception('bad request', 500);
+        }
 
         $this->predisClient->expire($key, $ttl);
 
@@ -97,6 +111,8 @@ class RedisRepository implements CacheRepositoryInterface
         mixed $newBody,
     ): mixed {
         if (!$this->predisClient->exists($key)) {
+            $this->logger->writeTrace(LevelEnum::ERROR, 'key does not exist');
+
             throw new Exception('key does not exist', 400);
         }
 
@@ -105,7 +121,11 @@ class RedisRepository implements CacheRepositoryInterface
             "last_modified" => DatetimeManager::now(),
         ]);
 
-        if (!$result) throw new Exception('bad request', 500);
+        if (!$result) {
+            $this->logger->writeTrace(LevelEnum::ERROR, 'bad request');
+
+            throw new Exception('bad request', 500);
+        }
 
         $this->incrementRateLimit($key);
 

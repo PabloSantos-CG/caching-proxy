@@ -3,6 +3,8 @@
 namespace App\Infrastructure\HttpClient;
 
 use App\Infrastructure\Contracts\HttpClientInterface;
+use App\Infrastructure\Logging\LevelEnum;
+use App\Infrastructure\Logging\Logger;
 use Exception;
 
 class HttpClient implements HttpClientInterface
@@ -25,7 +27,16 @@ class HttpClient implements HttpClientInterface
         $response = \curl_exec($cURL);
         $httpCode = \curl_getinfo($cURL, \CURLINFO_HTTP_CODE);
 
-        if (!$response) throw new Exception(\curl_error($cURL), $httpCode);
+        if (!$response) {
+            $errorMessage = \curl_error($cURL);
+
+            \curl_close($cURL);
+
+            $logger = new Logger();
+            $logger->writeTrace(LevelEnum::ERROR, $errorMessage);
+
+            throw new Exception($errorMessage, $httpCode);
+        }
 
         \curl_close($cURL);
 
