@@ -30,12 +30,19 @@ class RedisRepository implements CacheRepositoryInterface
 
     private function incrementRateLimit(string $key): int
     {
-        return $this->predisClient->hincrby($key, "$key:rate_limit", 1);
+        return $this->predisClient->hincrby($key, "rate_limit", 1);
     }
 
     public function checkExists(string $key): bool
     {
         return $this->predisClient->exists($key);
+    }
+
+    private function checkIfRateLimitReached(string $key): bool
+    {
+        $rateLimit = $this->predisClient->hget($key, 'rate_limit');
+
+        return $rateLimit >= 60 ? false : true;
     }
 
     /**
@@ -44,6 +51,10 @@ class RedisRepository implements CacheRepositoryInterface
      */
     public function get(string $key): mixed
     {
+        if ($this->checkIfRateLimitReached($key)) {
+            throw new Exception('rate limit reached', 400);
+        }
+
         $result = $this->predisClient->hgetall($key);
 
         if (!$result) return false;
@@ -65,8 +76,8 @@ class RedisRepository implements CacheRepositoryInterface
      */
     public function set(
         string $key,
-        mixed $headers = null,
         mixed $data,
+        mixed $headers = [],
         int $ttl = 7200
     ): bool {
         if ($this->predisClient->exists($key)) {
@@ -81,12 +92,17 @@ class RedisRepository implements CacheRepositoryInterface
             throw new Exception('exceeded size', 400);
         }
 
-        $result = (bool) $this->predisClient->hset($key, [
-            "headers" => $headers ?? [],
-            "body" => $data,
-            "last_modified" => DatetimeManager::now(),
-            "$key:rate_limit" => 60,
-        ]);
+        $result = (bool) $this->predisClient->hset(
+            $key,
+            "headers",
+            \json_encode($headers),
+            "body",
+            $data,
+            "last_modified",
+            DatetimeManager::now(),
+            "rate_limit",
+            0,
+        );
 
         if (!$result) {
             $this->logger->writeTrace(LevelEnum::ERROR, 'bad request');
@@ -110,6 +126,10 @@ class RedisRepository implements CacheRepositoryInterface
         string $key,
         mixed $newBody,
     ): mixed {
+        if ($this->checkIfRateLimitReached($key)) {
+            throw new Exception('rate limit reached', 400);
+        }
+
         if (!$this->predisClient->exists($key)) {
             $this->logger->writeTrace(LevelEnum::ERROR, 'key does not exist');
 
