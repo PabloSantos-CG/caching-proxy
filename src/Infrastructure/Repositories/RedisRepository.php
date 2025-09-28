@@ -42,7 +42,7 @@ class RedisRepository implements CacheRepositoryInterface
     {
         $rateLimit = $this->predisClient->hget($key, 'rate_limit');
 
-        return $rateLimit >= 60 ? false : true;
+        return $rateLimit >= 60 ? true : false;
     }
 
     /**
