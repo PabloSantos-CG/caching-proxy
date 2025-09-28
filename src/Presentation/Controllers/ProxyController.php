@@ -24,7 +24,7 @@ class ProxyController implements ProxyControllerInterface
         try {
             /**
              * @var array{
-             *     headers: array<string, string>,
+             *     headers: string,
              *     body: string,
              *     last_modified: \DateTimeInterface,
              *     "url:rate_limit": int
@@ -40,7 +40,7 @@ class ProxyController implements ProxyControllerInterface
             $body = \json_decode($data['body']);
 
             $response->json(
-                $data['headers'],
+                \json_decode($data['headers']),
                 $body
             );
         } catch (\Throwable $th) {
