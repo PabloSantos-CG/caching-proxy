@@ -11,21 +11,26 @@ class Logger implements LoggerInterface
 
     public function __construct()
     {
-        $this->path = $_SERVER['DOCUMENT_ROOT'] . '/logs';
+        $this->path = $_SERVER['DOCUMENT_ROOT'] . '/logs/history.log';
     }
 
-    public function writeTrace(?string $message = null, LevelEnum $flag): bool
+    public function writeTrace(LevelEnum $flag, ?string $message = null): bool
     {
         $data = [];
 
         $data[] = '[' . DatetimeManager::now() . '] ';
-        $data[] = "$flag" . \PHP_EOL;
-        $data[] = $_ENV['HOST_PORT'] . ':' . $_ENV['ORIGIN'] . \PHP_EOL;
-        $data[] = \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+        $data[] = $flag->name . \PHP_EOL;
+        $data[] = 'PORT:' . $_ENV['HOST_PORT'] . '/';
+        $data[] = 'ORIGIN:' . $_ENV['ORIGIN'] . \PHP_EOL;
+        $data[] = \json_encode(
+            \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS)[0]
+        );
+        $data[] = \PHP_EOL;
         $data[] = '[URI::/' . $_GET['url'] . ']';
-        $data[] = $message ? \PHP_EOL . "$message;" : ";";
+        $data[] = $message ? \PHP_EOL . "error-message: $message;" : ";";
         $data[] = \PHP_EOL;
 
-        return (bool) \file_put_contents($this->path, $data, \FILE_APPEND);
+        $result = (bool) \file_put_contents($this->path, $data, \FILE_APPEND);
+        return $result;
     }
 }
