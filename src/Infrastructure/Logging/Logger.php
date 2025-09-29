@@ -7,30 +7,22 @@ use App\Utils\DatetimeManager;
 
 class Logger implements LoggerInterface
 {
-    private string $path;
-
-    public function __construct()
-    {
-        $this->path = $_SERVER['DOCUMENT_ROOT'] . '/logs/history.log';
-    }
-
-    public function writeTrace(LevelEnum $flag, ?string $message = null): bool
-    {
+    public static function writeTrace(
+        LevelEnum $flag,
+        string $filePath,
+        int $line,
+    ): bool {
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/logs/history.log';
         $data = [];
 
         $data[] = '[' . DatetimeManager::now() . '] ';
         $data[] = $flag->name . \PHP_EOL;
         $data[] = 'PORT:' . $_ENV['HOST_PORT'] . '/';
         $data[] = 'ORIGIN:' . $_ENV['ORIGIN'] . \PHP_EOL;
-        $data[] = \json_encode(
-            \debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS)[0]
-        );
-        $data[] = \PHP_EOL;
-        $data[] = '[URI::/' . $_GET['url'] . ']';
-        $data[] = $message ? \PHP_EOL . "error-message: $message;" : ";";
-        $data[] = \PHP_EOL;
+        $data[] = "[file:$filePath; line:$line]" . \PHP_EOL;
+        $data[] = '[URI::/' . $_GET['url'] . ']' . \PHP_EOL;
 
-        $result = (bool) \file_put_contents($this->path, $data, \FILE_APPEND);
+        $result = (bool) \file_put_contents($path, $data, \FILE_APPEND);
         return $result;
     }
 }
