@@ -34,7 +34,11 @@ $existsData = (bool) \json_decode($response['data'], true);
             ];
         }
 
-        $this->cacheRepository->set($url, $response['data'], $headers);
+        $this->cacheRepository->set(
+$url,
+$response['data'],
+            \json_encode($headers, true)
+);
 
         return $this->cacheRepository->get($url);
     }
