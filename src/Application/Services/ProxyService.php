@@ -40,7 +40,12 @@ $response['data'],
             \json_encode($headers, true)
 );
 
-        return $this->cacheRepository->get($url);
+        $data = $this->cacheRepository->get($url);
+$data['headers'] = \json_decode($data['headers'], true);
+        $data['headers']['last_modified'] = $data['last_modified'];
+        $data['body'] = \json_decode($data['body'], true);
+
+        return $data;
     }
 
     private function findOrUpdate(string $url, mixed $headers): mixed
