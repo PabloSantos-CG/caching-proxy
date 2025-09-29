@@ -15,7 +15,6 @@ use Exception;
 class RedisRepository implements CacheRepositoryInterface
 {
     private PredisClient $predisClient;
-    private LoggerInterface $logger;
 
     public function __construct()
     {
@@ -24,8 +23,6 @@ class RedisRepository implements CacheRepositoryInterface
             'port' => $_ENV['REDIS_PORT'],
             'password' => $_ENV['REDIS_PASSWORD'],
         ]);
-
-        $this->logger = new Logger();
     }
 
     private function incrementRateLimit(string $key): int
