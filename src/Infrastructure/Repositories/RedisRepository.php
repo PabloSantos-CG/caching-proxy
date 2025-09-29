@@ -136,16 +136,13 @@ class RedisRepository implements CacheRepositoryInterface
             throw new Exception('key does not exist', 400);
         }
 
-        $result = (bool) $this->predisClient->hset($key, [
-            "body" => $newBody,
-            "last_modified" => DatetimeManager::now(),
-        ]);
-
-        if (!$result) {
-            $this->logger->writeTrace(LevelEnum::ERROR, 'bad request');
-
-            throw new Exception('bad request', 500);
-        }
+        $this->predisClient->hset(
+            $key,
+            "body",
+            $newBody,
+            "last_modified",
+            DatetimeManager::now(),
+        );
 
         $this->incrementRateLimit($key);
 
