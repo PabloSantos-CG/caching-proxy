@@ -95,7 +95,7 @@ class RedisRepository implements CacheRepositoryInterface
         $result = (bool) $this->predisClient->hset(
             $key,
             "headers",
-            \json_encode($headers),
+            $headers,
             "body",
             $data,
             "last_modified",
