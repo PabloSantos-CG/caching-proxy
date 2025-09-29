@@ -52,7 +52,7 @@ class ProxyController implements ProxyControllerInterface
                 ]
             );
         } catch (\Throwable $th) {
-            
+
             Logger::writeTrace(
                 LevelEnum::ERROR,
                 $th->getFile(),
@@ -63,7 +63,6 @@ class ProxyController implements ProxyControllerInterface
                 data: [
                     'status' => 'error',
                     'message' => $th->getMessage(),
-                    'more_info' => $th->getFile(),
                 ],
                 status_code: $th->getCode()
             );
