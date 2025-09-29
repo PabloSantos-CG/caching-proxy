@@ -7,5 +7,5 @@ use App\Infrastructure\Logging\LevelEnum;
 
 interface LoggerInterface
 {
-    public function writeTrace(LevelEnum $flag, ?string $message = null): bool;
+    public static function writeTrace(LevelEnum $flag, string $filePath, int $line): bool;
 }
