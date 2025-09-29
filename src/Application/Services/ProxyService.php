@@ -26,7 +26,7 @@ class ProxyService implements ProxyServiceInterface
     {
         $response = HttpClient::get($url, $headers);
 
-$existsData = (bool) \json_decode($response['data'], true);
+        $existsData = (bool) \json_decode($response['data'], true);
         if (!$existsData) {
             return [
                 'headers' => $headers,
@@ -35,13 +35,13 @@ $existsData = (bool) \json_decode($response['data'], true);
         }
 
         $this->cacheRepository->set(
-$url,
-$response['data'],
+            $url,
+            $response['data'],
             \json_encode($headers, true)
-);
+        );
 
         $data = $this->cacheRepository->get($url);
-$data['headers'] = \json_decode($data['headers'], true);
+        $data['headers'] = \json_decode($data['headers'], true);
         $data['headers']['last_modified'] = $data['last_modified'];
         $data['body'] = \json_decode($data['body'], true);
 
@@ -72,8 +72,6 @@ $data['headers'] = \json_decode($data['headers'], true);
     public function index(string $url, mixed $headers): mixed
     {
         if (!$this->cacheRepository->checkExists($url)) {
-            // $this->logger->writeTrace(LevelEnum::ERROR);
-
             return $this->createIfNotExists($url, $headers);
         }
 
