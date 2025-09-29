@@ -52,9 +52,8 @@ $data['headers'] = \json_decode($data['headers'], true);
     {
         $data = $this->cacheRepository->get($url);
 
-        if ($data && !$headers['last_modified']) {
-            $message = 'key {last_modified} not found';
-            // $this->logger->writeTrace(LevelEnum::ERROR, $message);
+        if ($data && empty($headers['last_modified'])) {
+            $message = "{last_modified} key is not present in headers or is empty";
 
             throw new Exception($message, 400);
         }
