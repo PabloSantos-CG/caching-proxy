@@ -41,7 +41,7 @@ class ProxyController implements ProxyControllerInterface
                 $data['headers'],
                 [
                     'data' => $data['body'],
-                    'last_modified' => $data['last_modified']
+                    'last_modified' => $data['last_modified'] ?? null
                 ]
             );
         } catch (\Throwable $th) {
