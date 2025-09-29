@@ -24,8 +24,8 @@ class ProxyController implements ProxyControllerInterface
         try {
             /**
              * @var array{
-             *     headers: string,
-             *     body: string,
+             *     headers: array,
+             *     body: array,
              *     last_modified: \DateTimeInterface,
              *     "url:rate_limit": int
              * }
