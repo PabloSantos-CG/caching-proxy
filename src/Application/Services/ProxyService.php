@@ -74,7 +74,6 @@ class ProxyService implements ProxyServiceInterface
         if (!$this->cacheRepository->checkExists($url)) {
             return $this->createIfNotExists($url, $headers);
         }
-
         return $this->findOrUpdate($url, $headers);
     }
 }
