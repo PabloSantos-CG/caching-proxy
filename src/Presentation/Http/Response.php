@@ -7,8 +7,8 @@ use App\Presentation\Contracts\ResponseInterface;
 class Response implements ResponseInterface
 {
     public function json(
-        array $headers = [],
-        array $data = [],
+        mixed $headers = [],
+        mixed $data = [],
         int $status_code = 200
     ): void {
         http_response_code($status_code);
