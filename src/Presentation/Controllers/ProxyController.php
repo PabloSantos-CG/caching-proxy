@@ -37,17 +37,22 @@ class ProxyController implements ProxyControllerInterface
                 $request->header()
             );
 
-            $body = \json_decode($data['body']);
+            $data['headers'] = \json_decode($data['headers'], \true);
+            $data['body'] = \json_decode($data['body'], \true);
 
             $response->json(
-                \json_decode($data['headers']),
-                $body
+                $data['headers'],
+                [
+                    'data' => $data['body'],
+                    'last_modified' => $data['last_modified']
+                ]
             );
         } catch (\Throwable $th) {
             $response->json(
                 data: [
                     'status' => 'error',
-                    'message' => $th->getMessage()
+                    'message' => $th->getMessage(),
+                    'more_info' => $th->getFile(),
                 ],
                 status_code: $th->getCode()
             );
