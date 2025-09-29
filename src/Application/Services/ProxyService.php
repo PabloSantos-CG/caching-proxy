@@ -63,6 +63,9 @@ $data['headers'] = \json_decode($data['headers'], true);
             $data = $this->cacheRepository->update($url, $response['data']);
         }
 
+        $data['headers'] = \json_decode($data['headers'], true);
+        $data['body'] = \json_decode($data['body'], true);
+
         return $data;
     }
 
