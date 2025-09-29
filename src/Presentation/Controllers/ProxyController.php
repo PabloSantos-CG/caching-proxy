@@ -9,6 +9,7 @@ use App\Infrastructure\Logging\Logger;
 use App\Presentation\Contracts\ProxyControllerInterface;
 use App\Presentation\Contracts\RequestInterface;
 use App\Presentation\Contracts\ResponseInterface;
+use Exception;
 
 class ProxyController implements ProxyControllerInterface
 {
@@ -24,6 +25,10 @@ class ProxyController implements ProxyControllerInterface
         ResponseInterface $response
     ): void {
         try {
+            if ($request->method() !== 'GET') {
+                throw new Exception('unauthorized method', 401);
+            }
+
             /**
              * @var array{
              *     headers: array,
