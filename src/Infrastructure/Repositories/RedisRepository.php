@@ -77,7 +77,7 @@ class RedisRepository implements CacheRepositoryInterface
     public function set(
         string $key,
         mixed $data,
-        mixed $headers = [],
+        mixed $headers = '[]',
         int $ttl = 7200
     ): bool {
         if ($this->predisClient->exists($key)) {
