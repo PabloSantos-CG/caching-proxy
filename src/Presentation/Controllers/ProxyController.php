@@ -37,9 +37,6 @@ class ProxyController implements ProxyControllerInterface
                 $request->header()
             );
 
-            $data['headers'] = \json_decode($data['headers'], \true);
-            $data['body'] = \json_decode($data['body'], \true);
-
             $response->json(
                 $data['headers'],
                 [
