@@ -4,6 +4,8 @@ namespace App\Presentation\Controllers;
 
 use App\Application\Contracts\ProxyServiceInterface;
 use App\Application\Services\ProxyService;
+use App\Infrastructure\Logging\LevelEnum;
+use App\Infrastructure\Logging\Logger;
 use App\Presentation\Contracts\ProxyControllerInterface;
 use App\Presentation\Contracts\RequestInterface;
 use App\Presentation\Contracts\ResponseInterface;
@@ -45,6 +47,13 @@ class ProxyController implements ProxyControllerInterface
                 ]
             );
         } catch (\Throwable $th) {
+            
+            Logger::writeTrace(
+                LevelEnum::ERROR,
+                $th->getFile(),
+                $th->getLine()
+            );
+
             $response->json(
                 data: [
                     'status' => 'error',
