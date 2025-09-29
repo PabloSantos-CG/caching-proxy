@@ -32,9 +32,6 @@ class HttpClient implements HttpClientInterface
 
             \curl_close($cURL);
 
-            $logger = new Logger();
-            $logger->writeTrace(LevelEnum::ERROR, $errorMessage);
-
             throw new Exception($errorMessage, $httpCode);
         }
 
