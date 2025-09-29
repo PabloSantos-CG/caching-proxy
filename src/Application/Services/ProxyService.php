@@ -3,7 +3,6 @@
 namespace App\Application\Services;
 
 use App\Application\Contracts\ProxyServiceInterface;
-use App\Infrastructure\Contracts\LoggerInterface;
 use App\Infrastructure\HttpClient\HttpClient;
 use App\Infrastructure\Logging\LevelEnum;
 use App\Infrastructure\Logging\Logger;
@@ -14,12 +13,10 @@ use Exception;
 class ProxyService implements ProxyServiceInterface
 {
     private RedisRepository $cacheRepository;
-    private LoggerInterface $logger;
 
     public function __construct()
     {
         $this->cacheRepository = new RedisRepository();
-        $this->logger = new Logger();
     }
 
     private function createIfNotExists(string $url, mixed $headers): mixed
@@ -45,6 +42,8 @@ class ProxyService implements ProxyServiceInterface
         $data['headers']['last_modified'] = $data['last_modified'];
         $data['body'] = \json_decode($data['body'], true);
 
+        Logger::writeTrace(LevelEnum::REQUEST, __FILE__, __LINE__);
+
         return $data;
     }
 
@@ -65,6 +64,8 @@ class ProxyService implements ProxyServiceInterface
 
         $data['headers'] = \json_decode($data['headers'], true);
         $data['body'] = \json_decode($data['body'], true);
+
+        Logger::writeTrace(LevelEnum::REQUEST, __FILE__, __LINE__);
 
         return $data;
     }
