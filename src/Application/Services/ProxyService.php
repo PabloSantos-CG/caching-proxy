@@ -26,14 +26,16 @@ class ProxyService implements ProxyServiceInterface
     {
         $response = HttpClient::get($url, $headers);
 
-        $this->cacheRepository->set($url, $headers, $response['data']);
+        $this->cacheRepository->set($url, $response['data'], $headers);
 
         return $this->cacheRepository->get($url);
     }
 
     private function findOrUpdate(string $url, mixed $headers): mixed
     {
-        if (!$headers || !$headers['last_modified']) {
+        $data = $this->cacheRepository->get($url);
+
+        if ($data && !$headers['last_modified']) {
             $message = 'key \"last_modified\" not found';
 
             $this->logger->writeTrace(LevelEnum::ERROR, $message);
@@ -41,9 +43,7 @@ class ProxyService implements ProxyServiceInterface
             throw new Exception($message, 400);
         }
 
-        $data = $this->cacheRepository->get($url);
-
-        if ($headers['last_modified'] !== $data['last_modified']) {
+        if ($headers['last_modified'] > $data['last_modified']) {
             $response = HttpClient::get($url, $headers);
             $data = $this->cacheRepository->update($url, $response['data']);
         }
