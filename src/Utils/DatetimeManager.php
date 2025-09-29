@@ -14,7 +14,7 @@ final class DatetimeManager
     ) {
         $dateNow = new \DateTimeImmutable(timezone: $timezone);
 
-        return $dateNow->format('Y-m-d H:i:s P');
+        return $dateNow->format('Y-m-d H:i:s');
     }
 }
 
