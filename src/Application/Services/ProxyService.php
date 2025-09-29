@@ -75,8 +75,6 @@ class ProxyService implements ProxyServiceInterface
             return $this->createIfNotExists($url, $headers);
         }
 
-        $this->logger->writeTrace(LevelEnum::REQUEST);
-
         return $this->findOrUpdate($url, $headers);
     }
 }
