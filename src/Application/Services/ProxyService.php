@@ -26,6 +26,14 @@ class ProxyService implements ProxyServiceInterface
     {
         $response = HttpClient::get($url, $headers);
 
+$existsData = (bool) \json_decode($response['data'], true);
+        if (!$existsData) {
+            return [
+                'headers' => $headers,
+                'body' => 'no content',
+            ];
+        }
+
         $this->cacheRepository->set($url, $response['data'], $headers);
 
         return $this->cacheRepository->get($url);
