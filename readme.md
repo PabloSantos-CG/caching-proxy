@@ -4,12 +4,12 @@ Um **servidor proxy de cache** em PHP usando Docker. Utiliza **Redis** para cach
 
 ---
 
-## Funcionalidades
+## Detalhes
 
 - Proxy que intercepta requisições HTTP.
 - Armazenamento em cache usando Redis.
 - TTL configurável (tempo de expiração do cache).
-- CLI para iniciar o proxy, definir porta, definir servidor de origem e limpar cache.
+- Inicia o proxy ao executar o container, definir porta, senha do redis e servidor de origem em **.env**.
 
 ---
 
@@ -27,3 +27,24 @@ Um **servidor proxy de cache** em PHP usando Docker. Utiliza **Redis** para cach
 ```bash
 git clone https://github.com/seu-usuario/proxy-cache-php.git
 cd proxy-cache-php
+```
+
+2. Renomeie o **".env-example"** para **".env"**, altere ORIGIN(Opcional) e adicione sua senha do redis:
+```
+ORIGIN=http://dummyjson.com
+REDIS_PASSWORD=sua_senha_aqui
+```
+
+3. Inicie o projeto:
+```
+docker-compose build
+docker-compose up -d
+```
+
+4. Para limpar o cache:
+```
+php index.php --clear
+```
+
+
+
